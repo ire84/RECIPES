@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Rețete">
+<meta name="theme-color" content="#f97316">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Caietul meu de Rețete</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #fdf6ec;
+    --warm: #f5e6cc;
+    --paper: #faebd7;
+    --brown: #6b4226;
+    --brown-light: #a0673a;
+    --brown-dark: #3e2009;
+    --accent: #c0392b;
+    --ink: #2c1a0e;
+    --line: #dfc9a8;
+    --shadow: rgba(60,30,10,0.13);
+    --green: #2e7d32;
+    --green-light: #e8f5e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Lato', sans-serif;
+    color: var(--ink);
+    padding-bottom: 90px;
+    background-color: #e8d5b0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
+      repeating-linear-gradient(transparent, transparent 31px, #c9b48a 31px, #c9b48a 32px);
+    background-size: 400px 400px, 100% 32px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--brown-dark);
+    background-image: linear-gradient(135deg, #3e2009 0%, #5c2e0a 100%);
+    padding: 20px 28px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,.35);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid #a0673a;
+  }
+
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo-icon { font-size: 2rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,.3)); }
+  .logo-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.65rem;
+    color: var(--warm);
+    line-height: 1;
+    text-shadow: 1px 1px 3px rgba(0,0,0,.3);
+  }
+  .logo-text span { font-size: 0.68rem; color: var(--brown-light); letter-spacing: 2px; text-transform: uppercase; }
+
+  .search-wrap { position: relative; }
+  .search-wrap input {
+    background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.18);
+    border-radius: 20px; color: #fff; padding: 8px 16px 8px 34px;
+    font-size: 0.84rem; outline: none; width: 200px; transition: all .2s;
+    font-family: 'Lato', sans-serif;
+  }
+  .search-wrap input::placeholder { color: rgba(255,255,255,.38); }
+  .search-wrap input:focus { background: rgba(255,255,255,.15); width: 230px; }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,.38); font-size: .85rem; }
+
+  /* MAIN */
+  main { max-width: 1100px; margin: 0 auto; padding: 26px 20px; }
+
+  /* PAGE TITLE */
+  .page-banner {
+    background: var(--paper);
+    background-image:
+      repeating-linear-gradient(transparent, transparent 27px, #dfc9a8 27px, #dfc9a8 28px);
+    border-radius: 4px;
+    padding: 28px 32px 22px;
+    margin-bottom: 28px;
+    box-shadow: 3px 3px 0 #c9b48a, 0 4px 16px var(--shadow);
+    border-left: 6px solid var(--brown);
+    position: relative;
+    overflow: hidden;
+  }
+  .page-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .page-banner h2 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--brown-dark);
+    margin-bottom: 6px;
+  }
+  .page-banner p { font-size: 0.82rem; color: var(--brown-light); }
+
+  /* CATEGORIES */
+  .categories { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
+  .cat-btn {
+    padding: 5px 16px; border-radius: 20px; border: 1.5px solid var(--line);
+    background: var(--paper); color: var(--brown); font-size: .8rem;
+    font-family: 'Lato', sans-serif; cursor: pointer; transition: all .15s;
+    font-weight: 700; letter-spacing: .5px;
+    box-shadow: 1px 1px 0 #c9b48a;
+  }
+  .cat-btn:hover, .cat-btn.active { background: var(--brown); color: white; border-color: var(--brown); }
+
+  /* GRID */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: 20px; }
+
+  /* CARD */
+  .card {
+    background: var(--paper);
+    background-image: repeating-linear-gradient(transparent, transparent 27px, #dfc9a8 27px, #dfc9a8 28px);
+    border-radius: 4px;
+    box-shadow: 3px 3px 0 #c9b48a, 0 2px 12px var(--shadow);
+    overflow: hidden; cursor: pointer;
+    transition: transform .18s, box-shadow .18s;
+    position: relative;
+    border-top: 4px solid var(--brown);
+  }
+  .card:hover { transform: translateY(-4px) rotate(-.3deg); box-shadow: 5px 8px 0 #c9b48a, 0 10px 24px var(--shadow); }
+  .card-emoji { font-size: 2.6rem; padding: 18px 18px 6px; display: block; }
+  .card-body { padding: 0 18px 16px; }
+  .card-cat { font-size: .65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .card h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--brown-dark); margin-bottom: 8px; line-height: 1.3; }
+  .card-meta { display: flex; gap: 12px; font-size: .72rem; color: var(--brown-light); }
+  .card-delete {
+    position: absolute; top: 10px; right: 10px; background: none; border: none;
+    color: #ccc; cursor: pointer; font-size: 1rem; opacity: 0;
+    transition: opacity .15s, color .15s; padding: 4px;
+  }
+  .card:hover .card-delete { opacity: 1; }
+  .card-delete:hover { color: var(--accent); }
+
+  .empty { text-align: center; padding: 60px 20px; color: var(--brown-light); grid-column: 1/-1; }
+  .empty p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; }
+
+  /* FAB */
+  .fab-group { position: fixed; bottom: 26px; right: 26px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 200; }
+  .fab {
+    width: 54px; height: 54px; border-radius: 50%; border: none;
+    font-size: 1.5rem; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; transition: transform .18s, box-shadow .18s;
+    box-shadow: 0 4px 14px rgba(0,0,0,.28);
+  }
+  .fab-main { background: var(--accent); color: white; width: 58px; height: 58px; font-size: 1.8rem; }
+  .fab-main:hover { transform: scale(1.1) rotate(90deg); }
+  .fab-photo { background: var(--green); color: white; }
+  .fab-photo:hover { transform: scale(1.08); }
+  .fab-row { display: flex; align-items: center; gap: 8px; }
+  .fab-label {
+    background: rgba(30,10,0,.75); color: white; font-size: .72rem;
+    padding: 4px 10px; border-radius: 12px; white-space: nowrap;
+    font-family: 'Lato', sans-serif; letter-spacing: .5px; pointer-events: none;
+  }
+
+  /* OVERLAY */
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(30,10,0,.58); z-index: 300; align-items: center; justify-content: center; padding: 16px; }
+  .overlay.open { display: flex; }
+
+  .panel {
+    background: var(--paper);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
+      repeating-linear-gradient(transparent, transparent 27px, #dfc9a8 27px, #dfc9a8 28px);
+    width: 100%; max-width: 620px; max-height: 92vh; overflow-y: auto;
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 #a0673a, 0 24px 60px rgba(0,0,0,.35);
+    padding: 30px 28px 24px; position: relative;
+    animation: slideUp .22s ease;
+    border-left: 5px solid var(--brown);
+  }
+  @keyframes slideUp { from { transform: translateY(22px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .panel-close { position: absolute; top: 10px; right: 12px; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--brown-light); }
+  .panel h2 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; color: var(--brown-dark); margin-bottom: 20px; border-bottom: 2px solid var(--line); padding-bottom: 10px; }
+
+  /* FORM */
+  .form-row { margin-bottom: 15px; }
+  .form-row label { display: block; font-size: .7rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--brown-light); margin-bottom: 4px; }
+  .form-row input, .form-row select, .form-row textarea {
+    width: 100%; background: rgba(255,255,255,.7); border: 1.5px solid var(--line);
+    border-radius: 3px; padding: 8px 11px; font-size: .9rem;
+    font-family: 'Lato', sans-serif; color: var(--ink); outline: none;
+    transition: border-color .15s; resize: vertical;
+  }
+  .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--brown); background: white; }
+  .form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+
+  .emoji-picker { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 4px; }
+  .emoji-opt { font-size: 1.4rem; cursor: pointer; padding: 3px 6px; border-radius: 6px; border: 2px solid transparent; transition: all .13s; }
+  .emoji-opt:hover, .emoji-opt.sel { border-color: var(--brown); background: var(--warm); }
+
+  .btn-save { background: var(--brown); color: white; border: none; padding: 11px 26px; border-radius: 3px; font-family: 'Lato', sans-serif; font-weight: 700; font-size: .88rem; letter-spacing: 1px; cursor: pointer; transition: background .15s; margin-top: 6px; }
+  .btn-save:hover { background: var(--brown-dark); }
+
+  /* VIEW */
+  .view-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+  .view-emoji { font-size: 3.2rem; }
+  .view-title h2 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.65rem; color: var(--brown-dark); margin-bottom: 4px; }
+  .view-title .cat-tag { font-size: .68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); }
+  .view-meta { display: flex; gap: 18px; padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+  .meta-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .meta-item .meta-val { font-weight: 700; font-size: .95rem; color: var(--brown); }
+  .meta-item .meta-lbl { font-size: .62rem; letter-spacing: 1px; text-transform: uppercase; color: var(--brown-light); }
+  .section-title { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: var(--brown-dark); margin: 14px 0 8px; }
+  .ingredients-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .ingredients-list li { padding: 5px 10px; background: rgba(255,255,255,.6); border-left: 3px solid var(--brown-light); font-size: .87rem; border-radius: 0 3px 3px 0; }
+  .instructions-text { font-size: .88rem; line-height: 1.85; white-space: pre-wrap; background: rgba(255,255,255,.6); padding: 14px; border-radius: 3px; border: 1px solid var(--line); }
+  .btn-edit { background: none; border: 1.5px solid var(--brown); color: var(--brown); padding: 9px 20px; border-radius: 3px; font-family: 'Lato', sans-serif; font-weight: 700; font-size: .83rem; cursor: pointer; margin-top: 18px; transition: all .15s; }
+  .btn-edit:hover { background: var(--brown); color: white; }
+
+  /* AI IMPORT */
+  .import-zone {
+    border: 2.5px dashed var(--line); border-radius: 8px;
+    padding: 28px 20px; text-align: center; cursor: pointer;
+    transition: all .2s; background: rgba(255,255,255,.5); margin-bottom: 14px;
+  }
+  .import-zone:hover, .import-zone.drag { border-color: var(--green); background: var(--green-light); }
+  .import-zone .iz-icon { font-size: 2.8rem; margin-bottom: 8px; }
+  .import-zone p { font-size: .88rem; color: var(--brown-light); line-height: 1.5; }
+  .import-zone strong { color: var(--green); }
+
+  .preview-img { width: 100%; max-height: 210px; object-fit: contain; border-radius: 4px; margin-bottom: 12px; border: 1px solid var(--line); }
+
+  .camera-view { position: relative; margin-bottom: 12px; }
+  .camera-view video { width: 100%; border-radius: 6px; border: 2px solid var(--brown); max-height: 280px; object-fit: cover; display: block; }
+  .camera-controls { display: flex; gap: 10px; margin-top: 10px; }
+  .btn-capture { flex: 1; background: var(--accent); color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; }
+  .btn-capture:hover { background: #a93226; }
+  .btn-cancel-cam { background: #888; color: white; border: none; padding: 12px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+
+  .ai-status { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 6px; margin-bottom: 12px; font-size: .87rem; font-weight: 700; }
+  .ai-status.loading { background: #fff8e1; color: #f57f17; }
+  .ai-status.success { background: var(--green-light); color: var(--green); }
+  .ai-status.error { background: #f9ddd9; color: var(--accent); }
+
+  .spinner { width: 17px; height: 17px; border: 3px solid rgba(245,127,23,.3); border-top-color: #f57f17; border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .api-key-note { background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; padding: 11px 13px; margin-bottom: 14px; font-size: .81rem; color: #5d4037; line-height: 1.6; }
+  .api-key-note strong { display: block; margin-bottom: 3px; color: #e65100; }
+  .api-key-wrap { display: flex; gap: 8px; margin-bottom: 14px; }
+  .api-key-wrap input { flex: 1; }
+  .btn-small { background: var(--brown); color: white; border: none; padding: 0 13px; border-radius: 3px; font-size: .8rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; white-space: nowrap; }
+
+  .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .btn-green { background: var(--green); color: white; border: none; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; }
+  .btn-brown { background: #5d4037; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; display: block; text-align: center; }
+
+  .btn-ai { width: 100%; background: var(--brown); color: white; border: none; padding: 13px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; letter-spacing: .5px; }
+  .btn-ai:hover { background: var(--brown-dark); }
+
+  @media (max-width: 600px) {
+    header { padding: 14px 16px; }
+    .panel { padding: 22px 18px 18px; }
+    .form-2col { grid-template-columns: 1fr; }
+    .view-header { flex-direction: column; }
+    .fab-group { bottom: 18px; right: 18px; }
+    .search-wrap input { width: 150px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-icon">📖</span>
+    <div class="logo-text">
+      <h1>Caietul meu de Rețete</h1>
+      <span id="recipeCount">0 rețete salvate</span>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Caută o rețetă...">
+  </div>
+</header>
+
+<main>
+  <div class="page-banner">
+    <h2>✍️ Rețetele mele de familie</h2>
+    <p>Fiecare rețetă spune o poveste. Adaugă manual sau fotografiază direct din caiet.</p>
+  </div>
+  <div class="categories" id="categoryBar"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<div class="fab-group">
+  <div class="fab-row">
+    <span class="fab-label">📸 Import din poză</span>
+    <button class="fab fab-photo" id="fabPhoto">📷</button>
+  </div>
+  <div class="fab-row">
+    <span class="fab-label">Adaugă manual</span>
+    <button class="fab fab-main" id="fabBtn">+</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="panel" id="panel">
+    <button class="panel-close" id="panelClose">✕</button>
+    <div id="panelContent"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'retete_v5';
+const API_KEY_STORAGE = 'anthropic_key_v3';
+const EMOJIS = ['🍲','🍝','🥗','🍞','🎂','🍰','🍗','🥩','🍜','🥘','🍛','🥧','🍪','🫕','🍤','🥞','🍳','🍫','🧁','🍮','🫙','🍱','🥣','🧆'];
+
+const DEFAULT_RECIPES = [
+  { id:1, title:'Glazură de cacao', category:'Deserturi', emoji:'🍫', time:'15 min', portions:'1', difficulty:'Ușoară',
+    ingredients:'4 linguri zahăr\n1 plic zahăr vanilat\n4 linguri apă\n50g margarină\n2 linguri cacao',
+    instructions:'Într-o cratiță se pun la fiert apa cu zahărul. După primele clocote se adaugă margarina, apoi cacaua și amestecăm.\nSe lasă 5 minute, se ia de pe foc și se adaugă zahărul vanilat și opțional câteva picături de lapte.\n\n⚠️ Mai mult zahăr = glazură tare. Mai puțin zahăr = glazură moale (umedă).' },
+  { id:2, title:'Ciorbă de burtă', category:'Supe & Ciorbe', emoji:'🍲', time:'3h', portions:'6', difficulty:'Medie',
+    ingredients:'Burtă de vită 1kg\nSmântână 400g\nUsturoi 5 căței\nOțet\nOuă 4 buc\nDafin, sare, piper',
+    instructions:'1. Fierbeți burta în apă cu sare și dafin 2-3 ore.\n2. Tăiați în fâșii subțiri.\n3. Bateți smântâna cu ouăle și zeamă fierbinte.\n4. Turnați în supă amestecând continuu.\n5. Serviți cu usturoi și oțet.' }
+];
+
+let recipes = [];
+let activeCategory = 'Toate';
+let searchTerm = '';
+let savedApiKey = localStorage.getItem(API_KEY_STORAGE) || '';
+let cameraStream = null;
+
+function load() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  recipes = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_RECIPES));
+  if (!raw) save();
+}
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes)); }
+function getCategories() { return ['Toate', ...[...new Set(recipes.map(r => r.category).filter(Boolean))]]; }
+
+function renderCategoryBar() {
+  const bar = document.getElementById('categoryBar');
+  bar.innerHTML = '';
+  getCategories().forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn' + (cat === activeCategory ? ' active' : '');
+    btn.textContent = cat;
+    btn.onclick = () => { activeCategory = cat; renderCategoryBar(); renderGrid(); };
+    bar.appendChild(btn);
+  });
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  document.getElementById('recipeCount').textContent = recipes.length + ' rețete salvate';
+  const filtered = recipes.filter(r => {
+    const mc = activeCategory === 'Toate' || r.category === activeCategory;
+    const ms = !searchTerm || r.title.toLowerCase().includes(searchTerm) || (r.category||'').toLowerCase().includes(searchTerm) || (r.ingredients||'').toLowerCase().includes(searchTerm);
+    return mc && ms;
+  });
+  if (!filtered.length) { grid.innerHTML = '<div class="empty"><div style="font-size:3rem;margin-bottom:10px">🔍</div><p>Nicio rețetă găsită.</p></div>'; return; }
+  grid.innerHTML = '';
+  filtered.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = '<button class="card-delete" data-id="' + r.id + '">✕</button>'
+      + '<span class="card-emoji">' + (r.emoji||'🍽️') + '</span>'
+      + '<div class="card-body"><div class="card-cat">' + (r.category||'Diverse') + '</div>'
+      + '<h3>' + r.title + '</h3>'
+      + '<div class="card-meta"><span>⏱ ' + (r.time||'—') + '</span><span>👥 ' + (r.portions||'—') + ' porții</span><span>📊 ' + (r.difficulty||'—') + '</span></div></div>';
+    card.onclick = e => { if (!e.target.classList.contains('card-delete')) openView(r.id); };
+    card.querySelector('.card-delete').onclick = e => { e.stopPropagation(); if(confirm('Ștergi rețeta?')){ recipes=recipes.filter(x=>x.id!==r.id); save(); renderCategoryBar(); renderGrid(); } };
+    grid.appendChild(card);
+  });
+}
+
+function emojiPickerHtml(id, sel) {
+  return '<div class="emoji-picker" id="' + id + '">' + EMOJIS.map(e => '<span class="emoji-opt' + (e===sel?' sel':'') + '" data-emoji="' + e + '">' + e + '</span>').join('') + '</div>';
+}
+
+function bindEmoji(id, cb) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let cur = (el.querySelector('.sel') || el.querySelector('.emoji-opt')).dataset.emoji;
+  cb(cur);
+  el.addEventListener('click', e => {
+    const opt = e.target.closest('.emoji-opt'); if (!opt) return;
+    el.querySelectorAll('.emoji-opt').forEach(x => x.classList.remove('sel'));
+    opt.classList.add('sel'); cur = opt.dataset.emoji; cb(cur);
+  });
+}
+
+function openView(id) {
+  const r = recipes.find(x => x.id === id); if (!r) return;
+  const ing = (r.ingredients||'').split('\n').filter(Boolean).map(i => '<li>' + i + '</li>').join('');
+  document.getElementById('panelContent').innerHTML =
+    '<div class="view-header"><span class="view-emoji">' + (r.emoji||'🍽️') + '</span>'
+    + '<div class="view-title"><h2>' + r.title + '</h2><span class="cat-tag">' + (r.category||'Diverse') + '</span></div></div>'
+    + '<div class="view-meta">'
+    + '<div class="meta-item"><span class="meta-val">⏱ ' + (r.time||'—') + '</span><span class="meta-lbl">Timp</span></div>'
+    + '<div class="meta-item"><span class="meta-val">👥 ' + (r.portions||'—') + '</span><span class="meta-lbl">Porții</span></div>'
+    + '<div class="meta-item"><span class="meta-val">📊 ' + (r.difficulty||'—') + '</span><span class="meta-lbl">Dificultate</span></div>'
+    + '</div>'
+    + '<div class="section-title">📝 Ingrediente</div><ul class="ingredients-list">' + (ing||'<li>—</li>') + '</ul>'
+    + '<div class="section-title">👨‍🍳 Mod de preparare</div><div class="instructions-text">' + (r.instructions||'—') + '</div>'
+    + '<button class="btn-edit" id="editBtn">✏️ Editează</button>';
+  document.getElementById('editBtn').onclick = () => openForm(id);
+  openOverlay();
+}
+
+function openForm(id) {
+  const r = id ? recipes.find(x => x.id === id) : {};
+  const sel = r.emoji || '🍽️';
+  document.getElementById('panelContent').innerHTML =
+    '<h2>' + (id ? 'Editează rețeta' : 'Rețetă nouă') + '</h2>'
+    + '<div class="form-row"><label>Emoji</label>' + emojiPickerHtml('ep1', sel) + '</div>'
+    + '<div class="form-row"><label>Titlu *</label><input id="fTitle" type="text" value="' + (r.title||'') + '" placeholder="ex: Ciorbă de legume"></div>'
+    + '<div class="form-row"><label>Categorie</label><input id="fCategory" type="text" value="' + (r.category||'') + '" placeholder="ex: Deserturi, Supe & Ciorbe..."></div>'
+    + '<div class="form-2col"><div class="form-row" style="margin:0"><label>Timp</label><input id="fTime" type="text" value="' + (r.time||'') + '" placeholder="1h 30min"></div>'
+    + '<div class="form-row" style="margin:0"><label>Porții</label><input id="fPortions" type="number" value="' + (r.portions||'') + '" placeholder="4"></div></div>'
+    + '<div class="form-row"><label>Dificultate</label><select id="fDifficulty"><option value="">— selectează —</option>'
+    + ['Ușoară','Medie','Dificilă'].map(d => '<option' + (r.difficulty===d?' selected':'') + '>' + d + '</option>').join('')
+    + '</select></div>'
+    + '<div class="form-row"><label>Ingrediente (câte unul pe linie)</label><textarea id="fIngredients" rows="5">' + (r.ingredients||'') + '</textarea></div>'
+    + '<div class="form-row"><label>Mod de preparare</label><textarea id="fInstructions" rows="7">' + (r.instructions||'') + '</textarea></div>'
+    + '<button class="btn-save" id="saveBtn">💾 Salvează rețeta</button>';
+
+  let emoji = sel;
+  bindEmoji('ep1', e => { emoji = e; });
+
+  document.getElementById('saveBtn').onclick = () => {
+    const title = document.getElementById('fTitle').value.trim();
+    if (!title) { alert('Titlul e obligatoriu!'); return; }
+    const data = { title, emoji, category: document.getElementById('fCategory').value.trim()||'Diverse',
+      time: document.getElementById('fTime').value.trim(), portions: document.getElementById('fPortions').value,
+      difficulty: document.getElementById('fDifficulty').value,
+      ingredients: document.getElementById('fIngredients').value.trim(),
+      instructions: document.getElementById('fInstructions').value.trim() };
+    if (id) { const i = recipes.findIndex(x=>x.id===id); recipes[i] = Object.assign({}, recipes[i], data); }
+    else { data.id = Date.now(); recipes.unshift(data); }
+    save(); renderCategoryBar(); renderGrid(); closeOverlay();
+  };
+  openOverlay();
+}
+
+// ===== PHOTO IMPORT =====
+function openPhotoImport() {
+  savedApiKey = localStorage.getItem(API_KEY_STORAGE) || '';
+  document.getElementById('panelContent').innerHTML =
+    '<h2>📸 Import din poză</h2>'
+    + '<div class="api-key-note"><strong>🔑 Cheie API Anthropic necesară</strong>Obține gratuit de pe <a href="https://console.anthropic.com" target="_blank" style="color:var(--brown)">console.anthropic.com</a> → API Keys. Se salvează local în browser.</div>'
+    + '<div class="form-row"><label>Cheie API</label><div class="api-key-wrap"><input type="password" id="apiKeyInput" placeholder="sk-ant-..." value="' + savedApiKey + '"><button class="btn-small" id="saveKeyBtn">Salvează</button></div></div>'
+    + '<div id="cameraArea"></div>'
+    + '<div id="previewArea"></div>'
+    + '<div id="aiStatus"></div>'
+    + '<div id="importFormArea"></div>';
+
+  document.getElementById('saveKeyBtn').onclick = () => {
+    savedApiKey = document.getElementById('apiKeyInput').value.trim();
+    localStorage.setItem(API_KEY_STORAGE, savedApiKey);
+    alert('Cheie salvată! ✅');
+  };
+
+  renderCameraArea();
+  openOverlay();
+}
+
+function renderCameraArea(previewSrc) {
+  const area = document.getElementById('cameraArea');
+  if (!area) return;
+  if (previewSrc) {
+    document.getElementById('previewArea').innerHTML = '<img class="preview-img" src="' + previewSrc + '">';
+    area.innerHTML = '<div class="btn-grid">'
+      + '<button class="btn-green" id="btnCamAgain">📷 Altă poză</button>'
+      + '<label class="btn-brown">🖼️ Din galerie<input type="file" accept="image/*" style="display:none" id="galleryInput2"></label>'
+      + '</div>';
+    document.getElementById('btnCamAgain').onclick = () => { document.getElementById('previewArea').innerHTML=''; document.getElementById('aiStatus').innerHTML=''; document.getElementById('importFormArea').innerHTML=''; renderCameraArea(); };
+    const g2 = document.getElementById('galleryInput2');
+    if (g2) g2.onchange = e => handleFile(e.target.files[0]);
+  } else {
+    area.innerHTML = '<div class="import-zone" id="importZone"><div class="iz-icon">📷</div><p>Fotografiază pagina din caiet<br><strong>sau încarcă din galerie</strong></p></div>'
+      + '<div class="btn-grid">'
+      + '<button class="btn-green" id="btnCamera">📷 Deschide camera</button>'
+      + '<label class="btn-brown">🖼️ Din galerie<input type="file" accept="image/*" style="display:none" id="galleryInput"></label>'
+      + '</div>';
+    document.getElementById('btnCamera').onclick = openCamera;
+    const g = document.getElementById('galleryInput');
+    if (g) g.onchange = e => handleFile(e.target.files[0]);
+  }
+}
+
+function openCamera() {
+  const area = document.getElementById('cameraArea'); if (!area) return;
+  area.innerHTML = '<div class="camera-view"><video id="camVideo" autoplay playsinline></video></div>'
+    + '<div class="camera-controls">'
+    + '<button class="btn-capture" id="btnCapture">📸 Fă poza</button>'
+    + '<button class="btn-cancel-cam" id="btnCancelCam">✕ Anulează</button>'
+    + '</div>';
+  navigator.mediaDevices.getUserMedia({ video: { facingMode:'environment' } })
+    .then(stream => {
+      cameraStream = stream;
+      const vid = document.getElementById('camVideo');
+      if (vid) vid.srcObject = stream;
+    })
+    .catch(err => {
+      stopCamera();
+      alert('Nu pot accesa camera: ' + err.message + '\n\nFolosește butonul "Din galerie".');
+    });
+  document.getElementById('btnCapture').onclick = capturePhoto;
+  document.getElementById('btnCancelCam').onclick = () => { stopCamera(); renderCameraArea(); };
+}
+
+function stopCamera() {
+  if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+}
+
+function capturePhoto() {
+  const vid = document.getElementById('camVideo'); if (!vid) return;
+  const canvas = document.createElement('canvas');
+  canvas.width = vid.videoWidth; canvas.height = vid.videoHeight;
+  canvas.getContext('2d').drawImage(vid, 0, 0);
+  stopCamera();
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+  renderCameraArea(dataUrl);
+  processBase64(dataUrl.split(',')[1], 'image/jpeg');
+}
+
+function handleFile(file) {
+  if (!file) return;
+  document.getElementById('aiStatus').innerHTML = '';
+  document.getElementById('importFormArea').innerHTML = '';
+  const reader = new FileReader();
+  reader.onload = e => {
+    renderCameraArea(e.target.result);
+    processBase64(e.target.result.split(',')[1], file.type||'image/jpeg');
+  };
+  reader.readAsDataURL(file);
+}
+
+async function processBase64(base64, mediaType) {
+  const key = (document.getElementById('apiKeyInput')||{}).value || savedApiKey;
+  if (!key || !key.trim()) { document.getElementById('aiStatus').innerHTML = '<div class="ai-status error">❌ Introdu cheia API Anthropic mai întâi!</div>'; return; }
+
+  document.getElementById('aiStatus').innerHTML = '<div class="ai-status loading"><div class="spinner"></div> Citesc rețeta din poză... te rog așteaptă 🤖</div>';
+  document.getElementById('importFormArea').innerHTML = '';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'x-api-key': key.trim(), 'anthropic-version':'2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-opus-4-6',
+        max_tokens: 1500,
+        messages: [{ role:'user', content: [
+          { type:'image', source:{ type:'base64', media_type: mediaType, data: base64 } },
+          { type:'text', text: 'Digitalizează această rețetă scrisă de mână din caiet. Returnează DOAR un obiect JSON valid, fără markdown, fără text suplimentar:\n{"title":"titlul rețetei","category":"una din: Deserturi / Supe & Ciorbe / Aperitive / Fel principal / Salate / Altele","emoji":"un singur emoji relevant","time":"timp estimat preparare","portions":"numarul de portii ca cifra","difficulty":"Ușoară sau Medie sau Dificilă","ingredients":"ingredient1\\ningredient2\\ningredient3","instructions":"pasii de preparare"}\nDacă ceva nu e vizibil, estimează rezonabil. DOAR JSON.' }
+        ]}]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.content.map(b => b.text||'').join('');
+    const recipe = JSON.parse(text.replace(/```json|```/g,'').trim());
+    document.getElementById('aiStatus').innerHTML = '<div class="ai-status success">✅ Rețetă citită cu succes! Verifică și salvează.</div>';
+    showImportForm(recipe);
+  } catch(e) {
+    document.getElementById('aiStatus').innerHTML = '<div class="ai-status error">❌ Eroare: ' + e.message + '</div>';
+  }
+}
+
+function showImportForm(r) {
+  const sel = r.emoji || '🍽️';
+  document.getElementById('importFormArea').innerHTML =
+    '<hr style="border:none;border-top:2px solid var(--line);margin:16px 0">'
+    + '<div class="form-row"><label>Emoji</label>' + emojiPickerHtml('ep2', sel) + '</div>'
+    + '<div class="form-row"><label>Titlu *</label><input id="iTitle" type="text" value="' + (r.title||'') + '"></div>'
+    + '<div class="form-row"><label>Categorie</label><input id="iCategory" type="text" value="' + (r.category||'') + '"></div>'
+    + '<div class="form-2col"><div class="form-row" style="margin:0"><label>Timp</label><input id="iTime" type="text" value="' + (r.time||'') + '"></div>'
+    + '<div class="form-row" style="margin:0"><label>Porții</label><input id="iPortions" type="number" value="' + (r.portions||'') + '"></div></div>'
+    + '<div class="form-row"><label>Dificultate</label><select id="iDifficulty"><option value="">—</option>'
+    + ['Ușoară','Medie','Dificilă'].map(d => '<option' + (r.difficulty===d?' selected':'') + '>' + d + '</option>').join('')
+    + '</select></div>'
+    + '<div class="form-row"><label>Ingrediente</label><textarea id="iIngredients" rows="5">' + (r.ingredients||'') + '</textarea></div>'
+    + '<div class="form-row"><label>Mod de preparare</label><textarea id="iInstructions" rows="7">' + (r.instructions||'') + '</textarea></div>'
+    + '<button class="btn-save" id="importSaveBtn">💾 Adaugă în caiet</button>';
+
+  let emoji = sel;
+  bindEmoji('ep2', e => { emoji = e; });
+
+  document.getElementById('importSaveBtn').onclick = () => {
+    const title = document.getElementById('iTitle').value.trim();
+    if (!title) { alert('Titlul e obligatoriu!'); return; }
+    const nr = { id:Date.now(), title, emoji, category:document.getElementById('iCategory').value.trim()||'Diverse',
+      time:document.getElementById('iTime').value.trim(), portions:document.getElementById('iPortions').value,
+      difficulty:document.getElementById('iDifficulty').value,
+      ingredients:document.getElementById('iIngredients').value.trim(),
+      instructions:document.getElementById('iInstructions').value.trim() };
+    recipes.unshift(nr);
+    save(); renderCategoryBar(); renderGrid(); closeOverlay();
+    setTimeout(() => alert('✅ "' + nr.title + '" a fost adăugată în caiet!'), 100);
+  };
+}
+
+function openOverlay() { document.getElementById('overlay').classList.add('open'); }
+function closeOverlay() { stopCamera(); document.getElementById('overlay').classList.remove('open'); }
+
+document.getElementById('fabBtn').onclick = () => openForm(null);
+document.getElementById('fabPhoto').onclick = () => openPhotoImport();
+document.getElementById('panelClose').onclick = closeOverlay;
+document.getElementById('overlay').onclick = e => { if (e.target===e.currentTarget) closeOverlay(); };
+document.getElementById('searchInput').oninput = e => { searchTerm = e.target.value.toLowerCase(); renderGrid(); };
+
+load(); renderCategoryBar(); renderGrid();
+</script>
+</body>
+</html>
